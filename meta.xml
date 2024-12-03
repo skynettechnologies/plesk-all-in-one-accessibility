@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<module>
+  <id>plesk-all-in-one-accessibility</id>
+  <name>All in One Accessibility</name>
+  <description>Quick Web Accessibility Implementation with All In One Accessibility!</description>
+  <category>web_app</category>
+  <category>developer</category>
+   <buy_url>https://ada.skynettechnologies.us/trial-subscription?utm_source=all-in-one-accessibility&amp;utm_medium=landing-page&amp;utm_campaign=trial-subscription</buy_url>
+  <version>1.0</version>
+  <release>1</release>
+  <vendor>Skynet Technologies USA LLC</vendor>
+  <url>https://www.skynettechnologies.com/all-in-one-accessibility</url>
+  <help_url>https://www.skynettechnologies.com/knowledge-base</help_url>
+  <support_url>https://www.skynettechnologies.com/report-accessibility-problem</support_url>
+  <plesk_min_version>17.0.13</plesk_min_version>
+</module>
