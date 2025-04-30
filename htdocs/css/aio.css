@@ -1,0 +1,18 @@
+.btn [class*=" icon-"], .btn [class^=icon-], .s-btn [class*=" icon-"], .s-btn [class^=icon-], [class*=" icon-"], [class^=icon-], i.icon, span.icon {
+    /* background-repeat: no-repeat; */
+    /* background-size: contain; */
+    display: contents;
+    /* height: 16px; */
+    /* vertical-align: -3px; */
+    /* width: 16px; */
+}
+.all-in-one-accessibility-wrap .accessibility-settings .all-one-accessibility-form .icon-size-wrapper .option, .all-in-one-accessibility-wrap .accessibility-settings .all-one-accessibility-form .icon-type-wrapper .option {
+    width: 130px;
+    height: 130px;
+    padding: 10px !important;
+    text-align: center;
+    background-color: #3c007f !important;
+    outline: 4px solid #fff;
+    outline-offset: -4px;
+    border-radius: 10px;
+}

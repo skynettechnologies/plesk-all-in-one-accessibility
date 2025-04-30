@@ -1,5 +1,5 @@
 <?php
-// Copyright 1999-2016. Parallels IP Holdings GmbH.
+// Copyright (c) 2025 Skynet Technologies USA LLC
 
 $application = new pm_Application();
 $application->run();

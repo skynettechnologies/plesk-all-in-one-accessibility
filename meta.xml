@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright 1999-2016. Parallels IP Holdings GmbH. -->
+<!-- Copyright (c) 2025 Skynet Technologies USA LLC -->
 <module>
   <id>plesk-all-in-one-accessibility</id>
   <name>All in One Accessibility</name>
   <description>Quick Web Accessibility Implementation with All In One Accessibility!</description>
   <category>web_app</category>
   <category>developer</category>
-  <version>1.0</version>
+  <version>1.0.0</version>
   <release>1</release>
   <vendor>Skynet Technologies USA LLC</vendor>
   <url>https://www.skynettechnologies.com/all-in-one-accessibility</url>

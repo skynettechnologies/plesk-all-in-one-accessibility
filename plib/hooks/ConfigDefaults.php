@@ -1,12 +1,12 @@
 <?php
-// Copyright 1999-2016. Parallels IP Holdings GmbH.
+// Copyright (c) 2025 Skynet Technologies USA LLC.
 class Modules_CustomConfig_ConfigDefaults extends pm_Hook_ConfigDefaults
 {
 
     public function getDefaults()
     {
         return [
-            'homepage' => 'https://www.plesk.com/',
+            'homepage' => 'https://www.skynettechnologies.com/',
             'timeout' => 60,
         ];
     }

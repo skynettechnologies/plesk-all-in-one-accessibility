@@ -1,13 +1,12 @@
 <?php
-// Copyright 1999-2016. Parallels IP Holdings GmbH.
+// Copyright (c) 2025 Skynet Technologies USA LLC
 class IndexController extends pm_Controller_Action
 {
 
     public function indexAction()
     {
-        $this->view->timeout = pm_Config::get('timeout');
-        $this->view->homepage = pm_Config::get('homepage');
-        $this->view->undefined = pm_Config::get('undefined');
+        $this->view->headScript()->appendFile(pm_Context::getBaseUrl() . 'js/all_in_one_accessibility.js');
+        
     }
 
 }
