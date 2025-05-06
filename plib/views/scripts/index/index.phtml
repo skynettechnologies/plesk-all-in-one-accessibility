@@ -36,58 +36,130 @@ $customScript = '
 <script id="aioa-adawidget" src="https://www.skynettechnologies.com/accessibility/js/all-in-one-accessibility-js-widget-minify.js?colorcode=#485f8e&token=&position=middle_right" defer></script>';
 
 // Iterate over each domain and add the script
-// Iterate over each domain and add the script
 foreach ($domainSelector as $domainId => $domainName) {
   $fileManager = new \pm_FileManager($domainId);
   $domain = \pm_Domain::getByDomainId($domainId); // Correct way to get the domain
   $documentRoot = $domain->getDocumentRoot();
-  $scriptAdded = false;
 
-  // Scan recursively for .php and .html files
-  $rii = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($documentRoot));
-  foreach ($rii as $file) {
-    if ($file->isFile()) {
-      $filePath = $file->getPathname();
-      $ext = strtolower(pathinfo($filePath, PATHINFO_EXTENSION));
+// fetch widget settings api
 
-      if (in_array($ext, ['php', 'html'])) {
-        if ($fileManager->fileExists($filePath)) {
-          $fileContent = $fileManager->fileGetContents($filePath);
 
-          // Check if the script is already present
-          if (strpos($fileContent, "<script id='aioa-adawidget'") === false) {
+   // Prepare API POST request
+   $curl = curl_init();
+   $postData = json_encode(['website_url' => $domainName]);
 
-            if ($ext === 'php') {
-              // Safe PHP injection based on presence of closing tag
-              if (strpos($fileContent, '?>') !== false) {
-                $fileContent = str_replace('?>', "\necho '$customScript';\n?>", $fileContent);
-              } else {
-                $fileContent .= "\n\necho '$customScript';";
-              }
-            } elseif ($ext === 'html') {
-              $fileContent .= "\n" . $customScript;
-            }
+   curl_setopt_array($curl, array(
+       CURLOPT_URL => 'https://ada.skynettechnologies.us/api/widget-settings',
+       CURLOPT_RETURNTRANSFER => true,
+       CURLOPT_ENCODING => '',
+       CURLOPT_MAXREDIRS => 10,
+       CURLOPT_TIMEOUT => 10,
+       CURLOPT_FOLLOWLOCATION => true,
+       CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+       CURLOPT_CUSTOMREQUEST => 'POST',
+       CURLOPT_POSTFIELDS => $postData,
+       CURLOPT_HTTPHEADER => array(
+           'Content-Type: application/json',
+           'Content-Length: ' . strlen($postData)
+       )
+   ));
 
-            $fileManager->filePutContents($filePath, $fileContent);
-            $scriptAdded = true;
-            break; // Stop after first successful injection
-          } else {
-            $scriptAdded = true; // Script already exists
-            break;
-          }
-        }
-      }
+   $response = curl_exec($curl);
+   $widget_size = "0";
+if (!curl_errno($curl) && $response !== false) {
+    $result = json_decode($response, true);
+    if (isset($result['Data']) && !empty($result['Data'])) {
+      //fetch widget_size value
+      $widget_size = isset($result['Data']['widget_size']) ? $result['Data']['widget_size'] : "0";
+  }
+    // Check if "Data" exists and has content
+    if (isset($result['Data']) && !empty($result['Data'])) {
+
+        // Check if the widget is enabled in the fetched data
+        $isWidgetEnabled = isset($result['Data']['platform_widget_status']) ? $result['Data']['platform_widget_status'] : null;
+
+        if ($isWidgetEnabled === 1) {
+       
+         
+    $scriptAdded = false;
+
+    // Scan the directory and print debug output
+    $files = $fileManager->scanDir($documentRoot, true); // Recursively scan the directory
+  
+  
+
+    // Filter files for .php and .html only
+    $targetFiles = array_filter($files, function ($file) use ($documentRoot) {
+        $ext = strtolower(pathinfo($file, PATHINFO_EXTENSION));
+        // Ensure the file path is absolute
+        $absolutePath = realpath($documentRoot . DIRECTORY_SEPARATOR . $file);
+        return in_array($ext, ['php', 'html']) && $absolutePath !== false;
+    });
+
+    if (empty($targetFiles)) {
+        
     }
-  }
 
+    foreach ($targetFiles as $filePath) {
+        $absoluteFilePath = realpath($documentRoot . DIRECTORY_SEPARATOR . $filePath); // Convert to absolute path
+       
 
-  // If no suitable file was found, create a default index.php
-  if (!$scriptAdded) {
-    $defaultFilePath = $documentRoot . "/index.php";
-    $defaultContent = "<?php echo 'Welcome to My Custom Front Page!'; ?>\necho '$customScript';";
-    $fileManager->filePutContents($defaultFilePath, $defaultContent);
-    echo "Default front page created with custom script for domain: {$domainName} (ID: {$domainId})\n";
-  }
+        if ($fileManager->fileExists($absoluteFilePath)) {
+            $fileContent = $fileManager->fileGetContents($absoluteFilePath);
+
+            // Inject only if script is not already present
+            if (strpos($fileContent, '<script id="aioa-adawidget"') === false) {
+                if (str_ends_with($filePath, '.php')) {
+                    $injected = "\necho '$customScript';";
+                    $fileContent = strpos($fileContent, '?>') !== false
+                        ? str_replace('?>', "$injected\n?>", $fileContent)
+                        : $fileContent . $injected;
+                } else {
+                    $fileContent .= "\n" . $customScript;
+                }
+
+                $fileManager->filePutContents($absoluteFilePath, $fileContent);
+
+                $updatedContent = $fileManager->fileGetContents($absoluteFilePath);
+                if (strpos($updatedContent, '<script id="aioa-adawidget"') !== false) {
+                   
+                    $scriptAdded = true;
+                } else {
+                   
+                }
+            } else {
+               
+            }
+        } else {
+          
+        }
+    }
+
+    // If no file was modified and index.php does not exist, create it
+    $defaultFilePath = realpath($documentRoot . "/index.php"); // Ensure absolute path for default index.php
+    if (!$scriptAdded && !$fileManager->fileExists($defaultFilePath)) {
+        $defaultContent = "<?php echo ''; ?>\n" . $customScript;
+        $fileManager->filePutContents($defaultFilePath, $defaultContent);
+      
+    }
+
+          
+        } else {
+           
+        }
+    } else {
+        
+    }
+} else {
+    // Handle curl error
+   
+}
+
+curl_close($curl);
+
+// end setting API
+
+  
 }
 
 ?>
@@ -251,9 +323,7 @@ foreach ($domainSelector as $domainId => $domainName) {
                       </div>
                     </div>
                     <div class="mb-3 row widget-position" id="position_html">
-                      <label class="fcol-sm-3 col-form-label">Where would you like to place the accessibility icon on
-                        your
-                        site?
+                      <label class="fcol-sm-3 col-form-label">Where would you like to place the accessibility icon on your site?
                       </label>
                       <div class="col-sm-12 three-col">
                         <div

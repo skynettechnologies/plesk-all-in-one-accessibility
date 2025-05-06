@@ -1,8 +1,7 @@
 <?php
-// Copyright (c) 2025 Skynet Technologies USA LLC.
-class Modules_CustomConfig_ConfigDefaults extends pm_Hook_ConfigDefaults
+class Modules_AllinOneAccessibilityConfig_ConfigDefaults extends pm_Hook_ConfigDefaults
 {
-
+    //Hook for extension config defaults (panel.ini settings)
     public function getDefaults()
     {
         return [
@@ -10,32 +9,4 @@ class Modules_CustomConfig_ConfigDefaults extends pm_Hook_ConfigDefaults
             'timeout' => 60,
         ];
     }
-    public function getJsConfig()
-    {
-        return [
-            'dynamicVar' => date(DATE_ATOM),
-        ];
-    }
-
-    public function getJsOnReadyContent()
-    {
-        return 'PleskExt.AllinOneAccessibility.init();';
-    }
-
-    public function getJsContent()
-    {
-        return '// example';
-    }
-
-    public function getHeadContent()
-    {
-        return '<!-- additional content for head tag -->';
-    }
-
-    public function getBodyContent()
-    {
-        return '<!-- additional content for body tag -->';
-    }
-
-
 }

@@ -4,7 +4,7 @@
 // Security check: Only allow access to Plesk administrators
 if (!pm_Session::getClient()->isAdmin()) {
     http_response_code(403);
-    echo 'Permission denied.';
+   
     exit;
 }
 
@@ -14,13 +14,13 @@ if (pm_Session::isImpersonated()) {
     // Log or use $clientId if needed
 }
 
-// Retrieve POST data sent from JavaScript
+// Retrieve widget status and domain id 
 $enableWidget = isset($_POST['enable_widget']) ? $_POST['enable_widget'] : 0;
 $domainId = isset($_POST['domain_id']) ? $_POST['domain_id'] : null;
 
 // Check if a domain ID is provided
 if (!$domainId) {
-    echo "Invalid domain selection.";
+   
     exit;
 }
 
@@ -29,28 +29,26 @@ $customScript = '<script id="aioa-adawidget" src="https://www.skynettechnologies
 
 // Handle file modification (add or remove the script) based on widget state
 $fileManager = new \pm_FileManager($domainId);
-$domain = \pm_Domain::getByDomainId($domainId); // Correct way to get the domain
-$documentRoot = $domain->getDocumentRoot();  
+$domain = \pm_Domain::getByDomainId($domainId); // Get domain object
+$documentRoot = $domain->getDocumentRoot();
 
-// Scan all .php and .html files
-$rii = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($documentRoot));
-$targetFiles = [];
+$files = $fileManager->scanDir($documentRoot, true); // Recursively scan the directory
 
-foreach ($rii as $file) {
-    if ($file->isFile()) {
-        $ext = strtolower(pathinfo($file, PATHINFO_EXTENSION));
-        if (in_array($ext, ['php', 'html'])) {
-            $targetFiles[] = $file->getPathname();
-        }
-    }
-}
-
+// Filter files for .php and .html only
+$targetFiles = array_filter($files, function ($file) {
+    $ext = strtolower(pathinfo($file, PATHINFO_EXTENSION));
+    return in_array($ext, ['php', 'html']);
+});
 
 foreach ($targetFiles as $filePath) {
-    if ($fileManager->fileExists($filePath)) {
-        $fileContent = $fileManager->fileGetContents($filePath);
+    // Resolve absolute path for the file
+    $absoluteFilePath = realpath($documentRoot . DIRECTORY_SEPARATOR . $filePath);
+
+    if ($fileManager->fileExists($absoluteFilePath)) {
+        $fileContent = $fileManager->fileGetContents($absoluteFilePath);
 
         if ($enableWidget == 1) {
+            // Enable Widget: Add the script if not already present
             if (strpos($fileContent, '<script id="aioa-adawidget"') === false) {
                 if (str_ends_with($filePath, '.php')) {
                     $injected = "\necho '$customScript';";
@@ -61,20 +59,24 @@ foreach ($targetFiles as $filePath) {
                     $fileContent .= "\n" . $customScript;
                 }
 
-                $fileManager->filePutContents($filePath, $fileContent);
-                echo "Script added to $filePath<br>";
+                $fileManager->filePutContents($absoluteFilePath, $fileContent);
+              
             }
         } else {
+            // Disable Widget: Remove the script if it exists
             $updatedContent = preg_replace(
                 '/<script\s+id=[\'"]aioa-adawidget[\'"][^>]*><\/script>/i',
                 '',
                 $fileContent
             );
             if ($updatedContent !== $fileContent) {
-                $fileManager->filePutContents($filePath, $updatedContent);
-                echo "Script removed from $filePath<br>";
+                $fileManager->filePutContents($absoluteFilePath, $updatedContent);
+               
             }
         }
+    } else {
+       
     }
 }
+
 ?>
