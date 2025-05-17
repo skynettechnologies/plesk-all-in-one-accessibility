@@ -1,4 +1,5 @@
 <?php
+include 'setting_comman.php';
 // Create the $domainSelector array
 $domainSelector = [];
 foreach (pm_Session::getCurrentDomains() as $domain) {
@@ -32,14 +33,9 @@ try {
 }
 
 // Custom script to add
-$customScript = '
-<script id="aioa-adawidget" src="https://www.skynettechnologies.com/accessibility/js/all-in-one-accessibility-js-widget-minify.js?colorcode=#485f8e&token=&position=middle_right" defer></script>';
 
 // Iterate over each domain and add the script
 foreach ($domainSelector as $domainId => $domainName) {
-  $fileManager = new \pm_FileManager($domainId);
-  $domain = \pm_Domain::getByDomainId($domainId); // Correct way to get the domain
-  $documentRoot = $domain->getDocumentRoot();
 
 // fetch widget settings api
 
@@ -74,75 +70,10 @@ if (!curl_errno($curl) && $response !== false) {
   }
     // Check if "Data" exists and has content
     if (isset($result['Data']) && !empty($result['Data'])) {
-
         // Check if the widget is enabled in the fetched data
         $isWidgetEnabled = isset($result['Data']['platform_widget_status']) ? $result['Data']['platform_widget_status'] : null;
-
         if ($isWidgetEnabled === 1) {
-       
-         
-    $scriptAdded = false;
-
-    // Scan the directory and print debug output
-    $files = $fileManager->scanDir($documentRoot, true); // Recursively scan the directory
-  
-  
-
-    // Filter files for .php and .html only
-    $targetFiles = array_filter($files, function ($file) use ($documentRoot) {
-        $ext = strtolower(pathinfo($file, PATHINFO_EXTENSION));
-        // Ensure the file path is absolute
-        $absolutePath = realpath($documentRoot . DIRECTORY_SEPARATOR . $file);
-        return in_array($ext, ['php', 'html']) && $absolutePath !== false;
-    });
-
-    if (empty($targetFiles)) {
-        
-    }
-
-    foreach ($targetFiles as $filePath) {
-        $absoluteFilePath = realpath($documentRoot . DIRECTORY_SEPARATOR . $filePath); // Convert to absolute path
-       
-
-        if ($fileManager->fileExists($absoluteFilePath)) {
-            $fileContent = $fileManager->fileGetContents($absoluteFilePath);
-
-            // Inject only if script is not already present
-            if (strpos($fileContent, '<script id="aioa-adawidget"') === false) {
-                if (str_ends_with($filePath, '.php')) {
-                    $injected = "\necho '$customScript';";
-                    $fileContent = strpos($fileContent, '?>') !== false
-                        ? str_replace('?>', "$injected\n?>", $fileContent)
-                        : $fileContent . $injected;
-                } else {
-                    $fileContent .= "\n" . $customScript;
-                }
-
-                $fileManager->filePutContents($absoluteFilePath, $fileContent);
-
-                $updatedContent = $fileManager->fileGetContents($absoluteFilePath);
-                if (strpos($updatedContent, '<script id="aioa-adawidget"') !== false) {
-                   
-                    $scriptAdded = true;
-                } else {
-                   
-                }
-            } else {
-               
-            }
-        } else {
-          
-        }
-    }
-
-    // If no file was modified and index.php does not exist, create it
-    $defaultFilePath = realpath($documentRoot . "/index.php"); // Ensure absolute path for default index.php
-    if (!$scriptAdded && !$fileManager->fileExists($defaultFilePath)) {
-        $defaultContent = "<?php echo ''; ?>\n" . $customScript;
-        $fileManager->filePutContents($defaultFilePath, $defaultContent);
-      
-    }
-
+            addUpdateScript($domainId,'0','0');
           
         } else {
            
