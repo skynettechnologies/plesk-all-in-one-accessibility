@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Copyright (c) 2025 Skynet Technologies USA LLC -->
 <module>
-  <id>all-in-one-accessibility</id>
+  <id>plesk-all-in-one-accessibility</id>
   <name>All in One Accessibility</name>
   <description>Quick Web Accessibility Implementation with All In One Accessibility!</description>
   <category>web_app</category>
