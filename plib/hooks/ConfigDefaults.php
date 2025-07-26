@@ -1,5 +1,5 @@
 <?php
-class Modules_AllinOneAccessibilityConfig_ConfigDefaults extends pm_Hook_ConfigDefaults
+class Modules_PleskAllInOneAccessibility_ConfigDefaults extends pm_Hook_ConfigDefaults
 {
     //Hook for extension config defaults (panel.ini settings)
     public function getDefaults()

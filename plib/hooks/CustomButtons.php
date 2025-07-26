@@ -30,7 +30,7 @@ class Modules_PleskAllInOneAccessibility_CustomButtons extends pm_Hook_CustomBut
                 'link' => pm_Context::getBaseUrl(),
                 'newWindow' => false,
                 'contextParams' => true,
-                'visibility' => [$this],
+                'visibility' => [$this,'getVisibility'],
             ],
         ];
     }

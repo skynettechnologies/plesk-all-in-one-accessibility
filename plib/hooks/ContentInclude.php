@@ -1,5 +1,5 @@
 <?php
-class Modules_AllinOneAccessibilityConfig_ContentInclude extends pm_Hook_ContentInclude
+class Modules_PleskAllInOneAccessibility_ContentInclude extends pm_Hook_ContentInclude
 {
     public function getJsConfig()
     {
