@@ -14,7 +14,7 @@ const defaultSettings = {
 };
 
 document.addEventListener('DOMContentLoaded', () => {
-  document.getElementById('domain-list').value = "";
+  //document.getElementById('domain-list').value = "";
   updateVisibility();
 });
 // Hide or show form settings  based on whether a domain is selected
@@ -146,7 +146,7 @@ function populateSettings(settings) {
   toggleWidgetVisibility(checkbox);
 
   toggleWidgetScript(checkbox);
-  // fetch and set color code 
+  // fetch and set color code
   const colorField = document.getElementById("colorcode");
   if (colorField) {
     colorField.value = settings.widget_color_code;

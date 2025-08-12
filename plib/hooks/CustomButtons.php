@@ -13,14 +13,16 @@ class Modules_PleskAllInOneAccessibility_CustomButtons extends pm_Hook_CustomBut
                 'title' => 'All in One Accessibility',
                 'description' => 'Quick Web Accessibility Implementation with All In One Accessibility!',
                 'icon' => pm_Context::getBaseUrl() . 'icons/aioa-icon-type-1.svg',
-                'link' => pm_Context::getBaseUrl()
+                'link' => pm_Context::getBaseUrl(),
+                'contextParams' => true
             ],
             [
                 'place' => self::PLACE_HOSTING_PANEL_NAVIGATION,
                 'title' => 'All in One Accessibility',
                 'description' => 'Quick Web Accessibility Implementation with All In One Accessibility!',
                 'icon' => pm_Context::getBaseUrl() . 'icons/aioa-icon-type-1.svg',
-                'link' => pm_Context::getBaseUrl()
+                'link' => pm_Context::getBaseUrl(),
+                'contextParams' => true
             ],
             [
                 'place' => [self::PLACE_ADMIN_TOOLS_AND_SETTINGS,self::PLACE_DOMAIN_PROPERTIES],
@@ -28,7 +30,8 @@ class Modules_PleskAllInOneAccessibility_CustomButtons extends pm_Hook_CustomBut
                 'description' => 'Quick Web Accessibility Implementation with All In One Accessibility!',
                 'icon' => pm_Context::getBaseUrl() . 'icons/aioa-icon-type-1.svg',
                 'link' => pm_Context::getBaseUrl(),
-                'newWindow' => false
+                'newWindow' => false,
+                'contextParams' => true
             ],
         ];
     }
