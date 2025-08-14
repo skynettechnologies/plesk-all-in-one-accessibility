@@ -84,9 +84,7 @@ foreach ($domainSelector as $domainId => $domainName) {
             // Check if the widget is enabled in the fetched data
             $isWidgetEnabled = isset($result['Data']['platform_widget_status']) ? $result['Data']['platform_widget_status'] : null;
             if ($isWidgetEnabled === 1) {
-                echo $domainName.'1 <br>';
                 addUpdateScript($domainId,'0','0');
-
             } else {
 
             }

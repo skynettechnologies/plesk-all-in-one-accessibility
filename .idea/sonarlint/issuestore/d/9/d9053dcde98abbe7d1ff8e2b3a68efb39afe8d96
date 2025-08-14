@@ -1,0 +1,3 @@
+
+php:S101"uRename class "Modules_PleskAllInOneAccessibility_ConfigDefaults" to match the regular expression ^[A-Z][a-zA-Z0-9]*$.(ğÄÌÅ8ƒ–î§„3
+f	php:S1779"YReplace all non line feed end of line characters in this file "ConfigDefaults.php" by LF.
